@@ -143,7 +143,7 @@ function ClaimFormContent() {
   if (submitted) {
     return (
       <div className="min-h-[80vh]">
-        <div className="bg-[#1a1a5e] text-white px-4 py-8 sm:px-6 sm:py-10">
+        <div className="bg-[#005086] text-white px-4 py-8 sm:px-6 sm:py-10">
           <div className="mx-auto max-w-2xl">
             <h1 className="text-2xl font-bold sm:text-3xl">Claim Submitted</h1>
           </div>
@@ -166,7 +166,7 @@ function ClaimFormContent() {
             <div className="border border-[#dfe1e2] bg-[#f7f7f7] p-5 rounded-sm mb-6">
               <p className="text-xs font-bold uppercase tracking-widest text-[#5c5c5c] mb-2">Your Reference Code</p>
               <div className="flex items-center gap-3">
-                <code className="text-xl font-bold text-[#1a1a5e] tracking-wider">{uniqueCode}</code>
+                <code className="text-xl font-bold text-[#005086] tracking-wider">{uniqueCode}</code>
                 <button
                   onClick={handleCopy}
                   className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#dfe1e2] hover:bg-[#e8e8e8] transition-colors"
@@ -197,7 +197,7 @@ function ClaimFormContent() {
 
   return (
     <div className="min-h-[80vh]">
-      <div className="bg-[#1a1a5e] text-white px-4 py-8 sm:px-6 sm:py-10">
+      <div className="bg-[#005086] text-white px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center gap-2 mb-2">
             {method === "cashier_check" ? (

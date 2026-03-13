@@ -80,7 +80,7 @@ export default function CheckPage() {
 
   return (
     <div className="min-h-[80vh]">
-      <div className="bg-[#1a1a5e] text-white px-4 py-8 sm:px-6 sm:py-10">
+      <div className="bg-[#005086] text-white px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-2xl">
           <h1 className="text-2xl font-bold sm:text-3xl">Check Your Eligibility</h1>
           <p className="mt-2 text-sm text-blue-100/80">
@@ -104,12 +104,12 @@ export default function CheckPage() {
                 {/* Grant Amount Slider */}
                 <div className="space-y-4">
                   <Label className="text-sm font-bold flex items-center gap-2 text-[#1b1b1b]">
-                    <DollarSign className="h-4 w-4 text-[#1a1a5e]" />
+                    <DollarSign className="h-4 w-4 text-[#005086]" />
                     Select Grant Amount
                   </Label>
                   <div className="border border-[#dfe1e2] bg-[#f7f7f7] p-5 rounded-sm">
                     <div className="text-center mb-4">
-                      <div className="text-3xl font-bold text-[#1a1a5e] sm:text-4xl">
+                      <div className="text-3xl font-bold text-[#005086] sm:text-4xl">
                         {formatCurrency(grantAmount)}
                       </div>
                       <p className="mt-1 text-xs text-[#5c5c5c]">Federal Grant Amount</p>
@@ -124,7 +124,7 @@ export default function CheckPage() {
                         onChange={(e) => setGrantAmount(Number(e.target.value))}
                         className="grant-slider w-full h-2 rounded-full appearance-none cursor-pointer focus:outline-none"
                         style={{
-                          background: `linear-gradient(to right, #1a1a5e ${sliderPercent}%, #dfe1e2 ${sliderPercent}%)`,
+                          background: `linear-gradient(to right, #005086 ${sliderPercent}%, #dfe1e2 ${sliderPercent}%)`,
                         }}
                       />
                       <div className="flex justify-between mt-2 text-[11px] text-[#5c5c5c] font-medium">

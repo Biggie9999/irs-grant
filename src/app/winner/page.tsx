@@ -29,7 +29,7 @@ function WinnerContent() {
 
   return (
     <div className="min-h-[80vh]">
-      <div className="bg-[#1a1a5e] text-white px-4 py-8 sm:px-6 sm:py-10">
+      <div className="bg-[#005086] text-white px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-2xl">
           <h1 className="text-2xl font-bold sm:text-3xl">Grant Approval Notice</h1>
           <p className="mt-2 text-sm text-blue-100/80">
@@ -64,7 +64,7 @@ function WinnerContent() {
               <DollarSign className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-widest">Your Approved Grant Amount</span>
             </div>
-            <div className="text-4xl font-bold text-[#1a1a5e] sm:text-5xl">
+            <div className="text-4xl font-bold text-[#005086] sm:text-5xl">
               {formattedAmount}
             </div>
             <p className="mt-2 text-xs text-[#5c5c5c]">
@@ -105,7 +105,7 @@ function WinnerContent() {
                     <CheckCircle className="h-3 w-3" />
                   </div>
                 )}
-                <CreditCard className="mx-auto mb-2 h-6 w-6 text-[#1a1a5e]" />
+                <CreditCard className="mx-auto mb-2 h-6 w-6 text-[#005086]" />
                 <div className="text-sm font-bold text-[#1b1b1b]">Cashier Check</div>
                 <div className="mt-0.5 text-[11px] text-[#5c5c5c]">Mailed to your address</div>
               </button>
@@ -123,7 +123,7 @@ function WinnerContent() {
                     <CheckCircle className="h-3 w-3" />
                   </div>
                 )}
-                <Landmark className="mx-auto mb-2 h-6 w-6 text-[#1a1a5e]" />
+                <Landmark className="mx-auto mb-2 h-6 w-6 text-[#005086]" />
                 <div className="text-sm font-bold text-[#1b1b1b]">Electronic Deposit</div>
                 <div className="mt-0.5 text-[11px] text-[#5c5c5c]">Direct to your bank</div>
               </button>

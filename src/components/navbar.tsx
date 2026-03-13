@@ -17,7 +17,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Primary nav - dark blue IRS-style */}
-      <div className="bg-[#1a1a5e]">
+      <div className="bg-[#005086]">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-3 group">
             <Image
@@ -32,15 +32,15 @@ export function Navbar() {
             </span>
           </Link>
           <div className="flex items-center gap-1 text-sm text-white/90">
-            <button onClick={() => scrollToSection('faq')} className="hidden sm:inline-flex px-3 py-1.5 hover:text-white hover:bg-white/10 rounded transition-colors">
+            <button onClick={() => scrollToSection('faq')} className="px-2 py-1.5 sm:px-3 hover:text-white hover:bg-white/10 rounded transition-colors break-keep">
               Help
             </button>
-            <span className="hidden sm:inline text-white/30">|</span>
-            <Link href="/check" className="hidden sm:inline-flex px-3 py-1.5 hover:text-white hover:bg-white/10 rounded transition-colors">
+            <span className="text-white/30 hidden sm:inline">|</span>
+            <Link href="/check" className="px-2 py-1.5 sm:px-3 hover:text-white hover:bg-white/10 rounded transition-colors break-keep">
               Apply
             </Link>
-            <span className="hidden sm:inline text-white/30">|</span>
-            <Link href="/admin" className="hidden sm:inline-flex px-3 py-1.5 hover:text-white hover:bg-white/10 rounded transition-colors">
+            <span className="text-white/30 hidden sm:inline">|</span>
+            <Link href="/admin" className="px-2 py-1.5 sm:px-3 hover:text-white hover:bg-white/10 rounded transition-colors break-keep">
               Sign in ▾
             </Link>
           </div>
@@ -48,7 +48,7 @@ export function Navbar() {
       </div>
 
       {/* Secondary nav - lighter blue */}
-      <div className="bg-[#2b2b8b] border-b border-[#3d3da3]">
+      <div className="bg-[#0067a6] border-b border-[#007ac1]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
           <nav className="flex items-center gap-0 overflow-x-auto">
             <button onClick={() => scrollToSection('how-it-works')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
