@@ -19,16 +19,16 @@ export function Navbar() {
       {/* Primary nav - dark blue IRS-style */}
       <div className="bg-[#005086]">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-2 group">
             <Image
               src="/logo.png"
               alt="Grant Program Logo"
-              width={36}
-              height={36}
-              className="rounded brightness-200 invert"
+              width={54}
+              height={54}
+              className="brightness-0 invert object-contain"
             />
-            <span className="text-xl font-bold text-white tracking-tight">
-              Grant
+            <span className="text-3xl font-serif font-extrabold text-white tracking-widest mt-1">
+              GRANT
             </span>
           </Link>
           <div className="flex items-center gap-1 text-sm text-white/90">
