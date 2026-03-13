@@ -14,7 +14,7 @@ export default function CheckPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [notFound, setNotFound] = useState(false)
-  const [selectedGrant, setSelectedGrant] = useState<string>("")
+  const [grantAmount, setGrantAmount] = useState(400000)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -22,12 +22,11 @@ export default function CheckPage() {
     ssnLast4: "",
   })
 
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(val)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!selectedGrant) {
-      setError("Please select a grant amount to continue.")
-      return
-    }
     setLoading(true)
     setError("")
     setNotFound(false)
@@ -36,13 +35,13 @@ export default function CheckPage() {
       const res = await fetch("/api/check-winner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, grantAmount: selectedGrant }),
+        body: JSON.stringify({ ...formData, grantAmount: grantAmount.toString() }),
       })
 
       const data = await res.json()
 
       if (data.found) {
-        router.push(`/winner?id=${data.winner.id}&amount=${selectedGrant}`)
+        router.push(`/winner?id=${data.winner.id}&amount=${grantAmount}`)
       } else {
         setNotFound(true)
       }
@@ -52,6 +51,9 @@ export default function CheckPage() {
       setLoading(false)
     }
   }
+
+  // Calculate step position percentage for the filled track
+  const sliderPercent = ((grantAmount - 400000) / (1000000 - 400000)) * 100
 
   return (
     <div className="min-h-[80vh] bg-gradient-to-b from-muted/30 to-background">
@@ -93,51 +95,38 @@ export default function CheckPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Grant Amount Selection */}
-                <div className="space-y-3">
+                {/* Grant Amount Slider */}
+                <div className="space-y-4">
                   <Label className="text-base font-semibold flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-green-600" />
                     Select Grant Amount
                   </Label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      type="button"
-                      onClick={() => { setSelectedGrant("500000"); setError(""); }}
-                      className={`relative rounded-xl border-2 p-5 text-center transition-all duration-200 hover:shadow-lg ${
-                        selectedGrant === "500000"
-                          ? "border-green-500 bg-green-50 shadow-lg shadow-green-500/10 ring-2 ring-green-500/20"
-                          : "border-muted hover:border-green-300"
-                      }`}
-                    >
-                      {selectedGrant === "500000" && (
-                        <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-white">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                      )}
-                      <div className="text-2xl font-extrabold text-green-700">$500,000</div>
-                      <div className="mt-1 text-xs text-muted-foreground font-medium">Federal Grant</div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setSelectedGrant("1000000"); setError(""); }}
-                      className={`relative rounded-xl border-2 p-5 text-center transition-all duration-200 hover:shadow-lg ${
-                        selectedGrant === "1000000"
-                          ? "border-green-500 bg-green-50 shadow-lg shadow-green-500/10 ring-2 ring-green-500/20"
-                          : "border-muted hover:border-green-300"
-                      }`}
-                    >
-                      {selectedGrant === "1000000" && (
-                        <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-white">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                      )}
-                      <div className="text-2xl font-extrabold text-green-700">$1,000,000</div>
-                      <div className="mt-1 text-xs text-muted-foreground font-medium">Federal Grant</div>
-                    </button>
+                  <div className="rounded-xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+                    <div className="text-center mb-5">
+                      <div className="text-4xl font-extrabold text-green-700 sm:text-5xl">
+                        {formatCurrency(grantAmount)}
+                      </div>
+                      <p className="mt-1 text-sm text-green-600/70">Federal Grant Amount</p>
+                    </div>
+                    <div className="relative px-1">
+                      <input
+                        type="range"
+                        min={400000}
+                        max={1000000}
+                        step={50000}
+                        value={grantAmount}
+                        onChange={(e) => setGrantAmount(Number(e.target.value))}
+                        className="grant-slider w-full h-2 rounded-full appearance-none cursor-pointer focus:outline-none"
+                        style={{
+                          background: `linear-gradient(to right, #16a34a ${sliderPercent}%, #e2e8f0 ${sliderPercent}%)`,
+                        }}
+                      />
+                      <div className="flex justify-between mt-2 text-xs text-green-700/60 font-medium">
+                        <span>$400,000</span>
+                        <span>$700,000</span>
+                        <span>$1,000,000</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
