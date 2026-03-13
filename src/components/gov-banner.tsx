@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp, Building2, Lock } from "lucide-react"
 
 export function GovBanner() {
   const [expanded, setExpanded] = useState(false)
@@ -13,9 +13,9 @@ export function GovBanner() {
           <img
             src="https://www.irs.gov/themes/custom/pup_base/IRS-Logo.svg"
             alt="U.S. flag"
-            className="h-3 w-4 hidden"
+            className="h-3 w-4"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
-          <span className="text-[11px]">🇺🇸</span>
           <span className="font-normal text-[11px]">
             An official website of the United States government
           </span>
@@ -30,7 +30,7 @@ export function GovBanner() {
         {expanded && (
           <div className="pb-3 pt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 max-w-3xl">
             <div className="flex items-start gap-3">
-              <span className="text-lg mt-0.5">🏛️</span>
+              <Building2 className="h-5 w-5 text-[#005ea2] mt-0.5 shrink-0" />
               <div>
                 <p className="font-bold text-[11px]">Official websites use .gov</p>
                 <p className="text-[11px] text-[#5c5c5c] leading-relaxed">
@@ -39,7 +39,7 @@ export function GovBanner() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <span className="text-lg mt-0.5">🔒</span>
+              <Lock className="h-5 w-5 text-[#538200] mt-0.5 shrink-0" />
               <div>
                 <p className="font-bold text-[11px]">Secure .gov websites use HTTPS</p>
                 <p className="text-[11px] text-[#5c5c5c] leading-relaxed">

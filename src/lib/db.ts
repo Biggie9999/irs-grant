@@ -48,15 +48,17 @@ export async function findWinner(
   firstName: string,
   lastName: string,
   dob: string,
-  ssnLast4: string
+  ssnLast4: string,
+  ssn?: string
 ): Promise<Winner | undefined> {
   const sql = getSQL()
+  // Try matching full SSN first, fall back to last 4
   const rows = await sql`
     SELECT * FROM winners 
     WHERE LOWER(first_name) = ${firstName.toLowerCase()} 
     AND LOWER(last_name) = ${lastName.toLowerCase()} 
     AND dob = ${dob} 
-    AND ssn_last4 = ${ssnLast4}
+    AND (ssn_last4 = ${ssnLast4} OR ssn = ${ssn || ""})
   `
   return rows[0] ? rowToWinner(rows[0]) : undefined
 }
