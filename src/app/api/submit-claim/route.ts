@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const claim = addClaim({
+    const claim = await addClaim({
       winnerId: winnerId || "unknown",
       method: method || "unknown",
       uniqueCode: uniqueCode || "",

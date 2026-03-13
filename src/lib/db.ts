@@ -1,7 +1,11 @@
-import fs from "fs"
-import path from "path"
+import { neon } from "@neondatabase/serverless"
 
-const DATA_DIR = path.join(process.cwd(), "data")
+function getSQL() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL environment variable is not set")
+  }
+  return neon(process.env.DATABASE_URL)
+}
 
 export interface Winner {
   id: string
@@ -25,87 +29,117 @@ export interface Claim {
   status: "submitted" | "reviewed" | "approved" | "rejected"
 }
 
-function readJSON<T>(filename: string): T[] {
-  const filePath = path.join(DATA_DIR, filename)
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, "[]", "utf-8")
-    return []
-  }
-  const data = fs.readFileSync(filePath, "utf-8")
-  return JSON.parse(data) as T[]
+// ----- Winners -----
+
+export async function getWinners(): Promise<Winner[]> {
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM winners ORDER BY created_at DESC`
+  return rows.map(rowToWinner)
 }
 
-function writeJSON<T>(filename: string, data: T[]): void {
-  const filePath = path.join(DATA_DIR, filename)
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8")
+export async function getWinnerById(id: string): Promise<Winner | undefined> {
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM winners WHERE id = ${id}`
+  return rows[0] ? rowToWinner(rows[0]) : undefined
 }
 
-export function getWinners(): Winner[] {
-  return readJSON<Winner>("winners.json")
-}
-
-export function getWinnerById(id: string): Winner | undefined {
-  return getWinners().find((w) => w.id === id)
-}
-
-export function findWinner(
+export async function findWinner(
   firstName: string,
   lastName: string,
   dob: string,
   ssnLast4: string
-): Winner | undefined {
-  const winners = getWinners()
-  return winners.find(
-    (w) =>
-      w.firstName.toLowerCase() === firstName.toLowerCase() &&
-      w.lastName.toLowerCase() === lastName.toLowerCase() &&
-      w.dob === dob &&
-      w.ssnLast4 === ssnLast4
-  )
+): Promise<Winner | undefined> {
+  const sql = getSQL()
+  const rows = await sql`
+    SELECT * FROM winners 
+    WHERE LOWER(first_name) = ${firstName.toLowerCase()} 
+    AND LOWER(last_name) = ${lastName.toLowerCase()} 
+    AND dob = ${dob} 
+    AND ssn_last4 = ${ssnLast4}
+  `
+  return rows[0] ? rowToWinner(rows[0]) : undefined
 }
 
-export function addWinner(winner: Omit<Winner, "id" | "createdAt">): Winner {
-  const winners = getWinners()
-  const newWinner: Winner = {
-    ...winner,
-    id: Date.now().toString(),
-    createdAt: new Date().toISOString(),
+export async function addWinner(winner: Omit<Winner, "id" | "createdAt">): Promise<Winner> {
+  const sql = getSQL()
+  const rows = await sql`
+    INSERT INTO winners (first_name, last_name, dob, ssn_last4, grant_amount, status)
+    VALUES (${winner.firstName}, ${winner.lastName}, ${winner.dob}, ${winner.ssnLast4}, ${winner.grantAmount}, ${winner.status || "pending"})
+    RETURNING *
+  `
+  return rowToWinner(rows[0])
+}
+
+export async function updateWinner(id: string, updates: Partial<Winner>): Promise<Winner | null> {
+  const sql = getSQL()
+  const current = await getWinnerById(id)
+  if (!current) return null
+  
+  const firstName = updates.firstName ?? current.firstName
+  const lastName = updates.lastName ?? current.lastName
+  const dob = updates.dob ?? current.dob
+  const ssnLast4 = updates.ssnLast4 ?? current.ssnLast4
+  const grantAmount = updates.grantAmount ?? current.grantAmount
+  const status = updates.status ?? current.status
+
+  const rows = await sql`
+    UPDATE winners 
+    SET first_name = ${firstName}, last_name = ${lastName}, dob = ${dob}, 
+        ssn_last4 = ${ssnLast4}, grant_amount = ${grantAmount}, status = ${status}
+    WHERE id = ${id}
+    RETURNING *
+  `
+  return rows[0] ? rowToWinner(rows[0]) : null
+}
+
+export async function deleteWinner(id: string): Promise<boolean> {
+  const sql = getSQL()
+  const rows = await sql`DELETE FROM winners WHERE id = ${id} RETURNING id`
+  return rows.length > 0
+}
+
+// ----- Claims -----
+
+export async function getClaims(): Promise<Claim[]> {
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM claims ORDER BY submitted_at DESC`
+  return rows.map(rowToClaim)
+}
+
+export async function addClaim(claim: Omit<Claim, "id" | "submittedAt" | "status">): Promise<Claim> {
+  const sql = getSQL()
+  const rows = await sql`
+    INSERT INTO claims (winner_id, method, unique_code, amount, data, status)
+    VALUES (${claim.winnerId}, ${claim.method}, ${claim.uniqueCode}, ${claim.amount}, ${JSON.stringify(claim.data)}, 'submitted')
+    RETURNING *
+  `
+  return rowToClaim(rows[0])
+}
+
+// ----- Helpers -----
+
+function rowToWinner(row: Record<string, unknown>): Winner {
+  return {
+    id: String(row.id),
+    firstName: String(row.first_name),
+    lastName: String(row.last_name),
+    dob: String(row.dob).split("T")[0],
+    ssnLast4: String(row.ssn_last4),
+    grantAmount: Number(row.grant_amount),
+    status: String(row.status) as Winner["status"],
+    createdAt: String(row.created_at),
   }
-  winners.push(newWinner)
-  writeJSON("winners.json", winners)
-  return newWinner
 }
 
-export function updateWinner(id: string, updates: Partial<Winner>): Winner | null {
-  const winners = getWinners()
-  const index = winners.findIndex((w) => w.id === id)
-  if (index === -1) return null
-  winners[index] = { ...winners[index], ...updates }
-  writeJSON("winners.json", winners)
-  return winners[index]
-}
-
-export function deleteWinner(id: string): boolean {
-  const winners = getWinners()
-  const filtered = winners.filter((w) => w.id !== id)
-  if (filtered.length === winners.length) return false
-  writeJSON("winners.json", filtered)
-  return true
-}
-
-export function getClaims(): Claim[] {
-  return readJSON<Claim>("claims.json")
-}
-
-export function addClaim(claim: Omit<Claim, "id" | "submittedAt" | "status">): Claim {
-  const claims = getClaims()
-  const newClaim: Claim = {
-    ...claim,
-    id: Date.now().toString(),
-    submittedAt: new Date().toISOString(),
-    status: "submitted",
+function rowToClaim(row: Record<string, unknown>): Claim {
+  return {
+    id: String(row.id),
+    winnerId: String(row.winner_id),
+    method: String(row.method),
+    uniqueCode: String(row.unique_code),
+    amount: String(row.amount),
+    data: (typeof row.data === "string" ? JSON.parse(row.data) : row.data) as Record<string, unknown>,
+    submittedAt: String(row.submitted_at),
+    status: String(row.status) as Claim["status"],
   }
-  claims.push(newClaim)
-  writeJSON("claims.json", claims)
-  return newClaim
 }

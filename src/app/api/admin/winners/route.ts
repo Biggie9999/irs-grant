@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
-  const winners = getWinners()
+  const winners = await getWinners()
   return NextResponse.json({ winners })
 }
 
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   }
   try {
     const body = await req.json()
-    const winner = addWinner(body)
+    const winner = await addWinner(body)
     return NextResponse.json({ success: true, winner })
   } catch {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 })
@@ -38,7 +38,7 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json()
     const { id, ...updates } = body
-    const winner = updateWinner(id, updates)
+    const winner = await updateWinner(id, updates)
     if (!winner) {
       return NextResponse.json({ success: false, error: "Winner not found" }, { status: 404 })
     }
@@ -58,7 +58,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) {
       return NextResponse.json({ success: false, error: "ID required" }, { status: 400 })
     }
-    const deleted = deleteWinner(id)
+    const deleted = await deleteWinner(id)
     if (!deleted) {
       return NextResponse.json({ success: false, error: "Winner not found" }, { status: 404 })
     }

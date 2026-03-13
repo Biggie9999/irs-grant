@@ -14,6 +14,6 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
-  const claims = getClaims()
+  const claims = await getClaims()
   return NextResponse.json({ claims })
 }

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const winner = findWinner(firstName, lastName, dob, ssnLast4)
+    const winner = await findWinner(firstName, lastName, dob, ssnLast4)
 
     if (winner) {
       return NextResponse.json({
