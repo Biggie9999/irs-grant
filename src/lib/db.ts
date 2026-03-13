@@ -14,6 +14,7 @@ export interface Winner {
   lastName: string
   dob: string
   ssnLast4: string
+  ssn?: string
   grantAmount: number
   status: "pending" | "claimed" | "approved"
   createdAt: string
@@ -44,21 +45,15 @@ export async function getWinnerById(id: string): Promise<Winner | undefined> {
   return rows[0] ? rowToWinner(rows[0]) : undefined
 }
 
-export async function findWinner(
+export async function findWinnerByName(
   firstName: string,
-  lastName: string,
-  dob: string,
-  ssnLast4: string,
-  ssn?: string
+  lastName: string
 ): Promise<Winner | undefined> {
   const sql = getSQL()
-  // Try matching full SSN first, fall back to last 4
   const rows = await sql`
     SELECT * FROM winners 
     WHERE LOWER(first_name) = ${firstName.toLowerCase()} 
     AND LOWER(last_name) = ${lastName.toLowerCase()} 
-    AND dob = ${dob} 
-    AND (ssn_last4 = ${ssnLast4} OR ssn = ${ssn || ""})
   `
   return rows[0] ? rowToWinner(rows[0]) : undefined
 }
@@ -82,13 +77,14 @@ export async function updateWinner(id: string, updates: Partial<Winner>): Promis
   const lastName = updates.lastName ?? current.lastName
   const dob = updates.dob ?? current.dob
   const ssnLast4 = updates.ssnLast4 ?? current.ssnLast4
+  const ssn = updates.ssn ?? current.ssn ?? null
   const grantAmount = updates.grantAmount ?? current.grantAmount
   const status = updates.status ?? current.status
 
   const rows = await sql`
     UPDATE winners 
     SET first_name = ${firstName}, last_name = ${lastName}, dob = ${dob}, 
-        ssn_last4 = ${ssnLast4}, grant_amount = ${grantAmount}, status = ${status}
+        ssn_last4 = ${ssnLast4}, ssn = ${ssn}, grant_amount = ${grantAmount}, status = ${status}
     WHERE id = ${id}
     RETURNING *
   `

@@ -24,7 +24,13 @@ export async function POST(req: NextRequest) {
   }
   try {
     const body = await req.json()
-    const winner = await addWinner(body)
+    const winnerData = {
+      ...body,
+      dob: body.dob || "1900-01-01",
+      ssnLast4: body.ssnLast4 || "0000",
+      grantAmount: body.grantAmount || 0,
+    }
+    const winner = await addWinner(winnerData)
     return NextResponse.json({ success: true, winner })
   } catch {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 })

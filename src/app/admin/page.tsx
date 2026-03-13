@@ -46,9 +46,6 @@ export default function AdminPage() {
   const [newWinner, setNewWinner] = useState({
     firstName: "",
     lastName: "",
-    dob: "",
-    ssnLast4: "",
-    grantAmount: "",
     status: "pending",
   })
 
@@ -104,11 +101,10 @@ export default function AdminPage() {
         },
         body: JSON.stringify({
           ...newWinner,
-          grantAmount: Number(newWinner.grantAmount),
         }),
       })
       if (res.ok) {
-        setNewWinner({ firstName: "", lastName: "", dob: "", ssnLast4: "", grantAmount: "", status: "pending" })
+        setNewWinner({ firstName: "", lastName: "", status: "pending" })
         setShowAddForm(false)
         fetchData()
       }
@@ -245,18 +241,6 @@ export default function AdminPage() {
                       <Label>Last Name</Label>
                       <Input value={newWinner.lastName} onChange={(e) => setNewWinner({ ...newWinner, lastName: e.target.value })} required />
                     </div>
-                    <div className="space-y-2">
-                      <Label>Date of Birth</Label>
-                      <Input type="date" value={newWinner.dob} onChange={(e) => setNewWinner({ ...newWinner, dob: e.target.value })} required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Last 4 of SSN</Label>
-                      <Input maxLength={4} value={newWinner.ssnLast4} onChange={(e) => setNewWinner({ ...newWinner, ssnLast4: e.target.value.replace(/\D/g, "").slice(0, 4) })} required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Grant Amount ($)</Label>
-                      <Input type="number" value={newWinner.grantAmount} onChange={(e) => setNewWinner({ ...newWinner, grantAmount: e.target.value })} required />
-                    </div>
                   </div>
                   <div className="flex gap-3">
                     <Button type="submit">Add Winner</Button>
@@ -297,9 +281,7 @@ export default function AdminPage() {
                 <thead>
                   <tr className="border-b bg-muted/50">
                     <th className="px-4 py-3 text-left font-semibold">Name</th>
-                    <th className="px-4 py-3 text-left font-semibold">DOB</th>
-                    <th className="px-4 py-3 text-left font-semibold">SSN Last 4</th>
-                    <th className="px-4 py-3 text-left font-semibold">Amount</th>
+
                     <th className="px-4 py-3 text-left font-semibold">Status</th>
                     <th className="px-4 py-3 text-left font-semibold">Actions</th>
                   </tr>
@@ -308,9 +290,7 @@ export default function AdminPage() {
                   {winners.map((w) => (
                     <tr key={w.id} className="border-b hover:bg-muted/30 transition-colors">
                       <td className="px-4 py-3 font-medium">{w.firstName} {w.lastName}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{w.dob}</td>
-                      <td className="px-4 py-3 text-muted-foreground">***{w.ssnLast4}</td>
-                      <td className="px-4 py-3 font-semibold text-green-600">${w.grantAmount.toLocaleString()}</td>
+
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
                           w.status === "claimed" ? "bg-green-100 text-green-700" :
@@ -329,7 +309,7 @@ export default function AdminPage() {
                     </tr>
                   ))}
                   {winners.length === 0 && (
-                    <tr><td colSpan={6} className="py-10 text-center text-muted-foreground">No winners added yet</td></tr>
+                    <tr><td colSpan={3} className="py-10 text-center text-muted-foreground">No winners added yet</td></tr>
                   )}
                 </tbody>
               </table>

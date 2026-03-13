@@ -5,6 +5,15 @@ import Image from "next/image"
 import { Search } from "lucide-react"
 
 export function Navbar() {
+  const scrollToSection = (id: string) => {
+    if (typeof window !== "undefined") {
+      const element = document.getElementById(id)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" })
+      }
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Primary nav - dark blue IRS-style */}
@@ -13,19 +22,19 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.png"
-              alt="IRS Grant Program Logo"
+              alt="Grant Program Logo"
               width={36}
               height={36}
               className="rounded brightness-200 invert"
             />
             <span className="text-xl font-bold text-white tracking-tight">
-              IRS<span className="font-light ml-0.5 opacity-80"> Grant Program</span>
+              Grant
             </span>
           </Link>
           <div className="flex items-center gap-1 text-sm text-white/90">
-            <Link href="/" className="hidden sm:inline-flex px-3 py-1.5 hover:text-white hover:bg-white/10 rounded transition-colors">
+            <button onClick={() => scrollToSection('faq')} className="hidden sm:inline-flex px-3 py-1.5 hover:text-white hover:bg-white/10 rounded transition-colors">
               Help
-            </Link>
+            </button>
             <span className="hidden sm:inline text-white/30">|</span>
             <Link href="/check" className="hidden sm:inline-flex px-3 py-1.5 hover:text-white hover:bg-white/10 rounded transition-colors">
               Apply
@@ -42,15 +51,21 @@ export function Navbar() {
       <div className="bg-[#2b2b8b] border-b border-[#3d3da3]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
           <nav className="flex items-center gap-0 overflow-x-auto">
-            {["Grants", "Eligibility", "Benefits", "Apply Now", "Contact Us"].map((item) => (
-              <Link
-                key={item}
-                href={item === "Apply Now" ? "/check" : "/"}
-                className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50"
-              >
-                {item}
-              </Link>
-            ))}
+            <button onClick={() => scrollToSection('how-it-works')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+              Grants
+            </button>
+            <button onClick={() => scrollToSection('who-qualifies')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+              Eligibility
+            </button>
+            <button onClick={() => scrollToSection('faq')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+              Benefits
+            </button>
+            <Link href="/check" className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+              Apply Now
+            </Link>
+            <button onClick={() => scrollToSection('faq')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+              Contact Us
+            </button>
           </nav>
           <div className="hidden sm:flex items-center gap-1">
             <input

@@ -11,15 +11,15 @@ export function Footer() {
             <div className="flex items-center gap-2 mb-3">
               <Image
                 src="/logo.png"
-                alt="IRS Grant Program"
+                alt="Grant Program"
                 width={28}
                 height={28}
                 className="brightness-200 invert rounded"
               />
-              <span className="text-sm font-bold">IRS Grant Program</span>
+              <span className="text-sm font-bold">Grant</span>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
-              The IRS Federal Grant Program provides financial assistance to eligible senior citizens and disabled individuals across the United States.
+              The Federal Grant Program provides financial assistance to eligible senior citizens and disabled individuals across the United States.
             </p>
           </div>
 
@@ -29,8 +29,8 @@ export function Footer() {
             <ul className="space-y-1.5">
               {[
                 { label: "Check Eligibility", href: "/check" },
-                { label: "About the Program", href: "/" },
-                { label: "Contact Us", href: "/" },
+                { label: "About the Program", href: "/#how-it-works" },
+                { label: "Contact Us", href: "/#faq" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-xs text-gray-300 hover:text-white transition-colors">
