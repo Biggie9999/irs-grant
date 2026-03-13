@@ -8,15 +8,19 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           {/* Logo & Description */}
           <div>
-            <div className="flex items-center gap-2 mb-3 group">
-              <Image
-                src="/logo.png"
-                alt="Grant Program"
-                width={36}
-                height={36}
-                className="brightness-0 invert object-contain"
-              />
-              <span className="text-xl font-serif font-extrabold tracking-widest mt-1">GRANT</span>
+            <div className="flex items-center gap-2 mb-2 group">
+              <div className="relative overflow-hidden w-[32px] h-[32px]">
+                <Image
+                  src="/logo.png"
+                  alt="Grant Program"
+                  fill
+                  sizes="32px"
+                  className="brightness-0 invert object-cover object-left"
+                />
+              </div>
+              <span className="text-xl font-serif font-bold tracking-[0.15em] leading-none mt-1">
+                GRANT
+              </span>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
               The Federal Grant Program provides financial assistance to eligible senior citizens and disabled individuals across the United States.
