@@ -83,11 +83,15 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Decorative background illustration (similar to the plant/lady in the screenshot) */}
-        <div className="absolute bottom-0 left-[45%] opacity-20 pointer-events-none hidden lg:block w-[500px] h-[500px]">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#005086" d="M39.9,-65.4C54.4,-61.2,70.8,-55.8,77.3,-44.3C83.9,-32.8,80.7,-15.1,76,-0.3C71.3,14.6,65.1,26.5,58.8,40.1C52.5,53.8,45.9,69.1,33.7,77.5C21.5,85.8,3.6,87.1,-12,83C-27.6,78.8,-41,69.1,-52.1,57C-63.3,44.9,-72.1,30.3,-75.4,14.4C-78.7,-1.5,-76.3,-18.7,-68.8,-32.8C-61.2,-46.8,-48.5,-57.8,-34.5,-62.4C-20.5,-67.1,-5.2,-65.5,8.8,-69.1C22.7,-72.7,35.3,-71.4,39.9,-65.4Z" transform="translate(100 100)" />
-          </svg>
+        {/* Decorative background illustration (Styled graphic) */}
+        <div className="absolute top-1/2 left-[48%] -translate-y-1/2 hidden lg:block w-[380px] h-[380px]">
+          <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-8 border-white rotate-3">
+            <img 
+              src="https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=800&q=80" 
+              alt="Person working on finances"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
         </div>
       </section>
 

@@ -8,17 +8,17 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           {/* Logo & Description */}
           <div>
-            <div className="flex items-center gap-2 mb-2 group">
-              <div className="relative overflow-hidden w-[32px] h-[32px]">
+            <div className="flex items-center gap-1.5 mb-2 group">
+              <div className="relative overflow-hidden w-[28px] h-[28px]">
                 <Image
                   src="/logo.png"
                   alt="Grant Program"
                   fill
-                  sizes="32px"
+                  sizes="28px"
                   className="brightness-0 invert object-cover object-left"
                 />
               </div>
-              <span className="text-xl font-serif font-bold tracking-[0.15em] leading-none mt-1">
+              <span className="text-[20px] font-serif font-bold tracking-widest mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
                 GRANT
               </span>
             </div>
