@@ -8,16 +8,18 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           {/* Logo & Description */}
           <div>
-            <div className="flex items-center gap-1.5 mb-3 group">
-              <Image
-                src="/logo.png"
-                alt="IRS Logo"
-                width={70}
-                height={24}
-                className="brightness-0 invert object-contain"
-              />
-              <span className="text-[19px] font-serif font-bold tracking-wide mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
-                GRANT
+            <div className="flex items-center gap-1.5 mb-2 group">
+              <div className="relative overflow-hidden w-[28px] h-[28px]">
+                <Image
+                  src="/logo.png"
+                  alt="Federal Grants Logo"
+                  fill
+                  sizes="28px"
+                  className="brightness-0 invert object-cover object-left"
+                />
+              </div>
+              <span className="text-[18px] font-serif font-bold tracking-widest mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
+                FEDERAL GRANTS
               </span>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
