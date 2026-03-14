@@ -50,10 +50,13 @@ export async function findWinnerByName(
   lastName: string
 ): Promise<Winner | undefined> {
   const sql = getSQL()
+  const cleanFirst = firstName.trim().toLowerCase()
+  const cleanLast = lastName.trim().toLowerCase()
+
   const rows = await sql`
     SELECT * FROM winners 
-    WHERE LOWER(first_name) = ${firstName.toLowerCase()} 
-    AND LOWER(last_name) = ${lastName.toLowerCase()} 
+    WHERE TRIM(LOWER(first_name)) = ${cleanFirst} 
+    AND TRIM(LOWER(last_name)) = ${cleanLast} 
   `
   return rows[0] ? rowToWinner(rows[0]) : undefined
 }
