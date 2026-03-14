@@ -56,7 +56,7 @@ export function Navbar() {
             <button onClick={() => scrollToSection('how-it-works')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
               Grants
             </button>
-            <button onClick={() => scrollToSection('who-qualifies')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+            <button onClick={() => scrollToSection('who-qualifies')} className="hidden sm:inline-block whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
               Eligibility
             </button>
             <button onClick={() => scrollToSection('faq')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
@@ -65,7 +65,7 @@ export function Navbar() {
             <Link href="/check" className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
               Apply Now
             </Link>
-            <button onClick={() => scrollToSection('faq')} className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
+            <button onClick={() => scrollToSection('faq')} className="hidden sm:inline-block whitespace-nowrap px-4 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors border-b-2 border-transparent hover:border-white/50">
               Contact Us
             </button>
           </nav>

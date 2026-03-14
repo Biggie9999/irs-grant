@@ -11,6 +11,15 @@ export default function HomePage() {
     <div>
       {/* Hero Section */}
       <section className="bg-white text-[#1b1b1b] border-b border-[#dfe1e2] relative overflow-hidden">
+        {/* Subtle Background Watermark */}
+        <div className="absolute -left-20 top-0 opacity-[0.03] pointer-events-none w-[600px] h-[600px]">
+          <img
+            src="/logo.png"
+            alt=""
+            className="w-full h-full object-cover object-left"
+          />
+        </div>
+
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20 relative z-10">
           <div className="grid gap-12 lg:grid-cols-[1fr_380px] items-center">
             
@@ -21,8 +30,8 @@ export default function HomePage() {
               transition={{ duration: 0.5 }}
               className="max-w-xl"
             >
-              <h1 className="mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-[#1b1b1b] leading-[1.1]">
-                Do more with a Federal Grant
+              <h1 className="mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-5xl text-[#1b1b1b] leading-[1.1]">
+                Federal Grant Assistance Program
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-[#1b1b1b]">
                 Access financial assistance securely with an Individual or Business application.
@@ -229,14 +238,21 @@ export default function HomePage() {
                 a: "Yes. Our systems use enterprise-grade encryption and secure protocols to ensure that all submitted information is protected in accordance with federal privacy standards.",
               },
             ].map((faq, i) => (
-              <div key={i} className="rounded-lg border border-[#dfe1e2] bg-[#f7f7f7] p-5">
-                <h3 className="mb-2 text-lg font-bold text-[#1b1b1b] flex gap-2">
-                  <span className="text-[#005ea2]">Q:</span> {faq.q}
-                </h3>
-                <p className="text-[#5c5c5c] leading-relaxed">
-                  <strong className="text-[#005086]">A:</strong> {faq.a}
-                </p>
-              </div>
+              <details key={i} className="group rounded-lg border border-[#dfe1e2] bg-white overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer items-center justify-between p-5 font-bold text-lg text-[#1b1b1b] hover:bg-[#f9f9f9] transition-colors outline-none">
+                  <span className="flex gap-3">
+                    <span className="text-[#005ea2]">Q:</span> 
+                    <span className="text-base sm:text-lg">{faq.q}</span>
+                  </span>
+                  <span className="transition-transform duration-300 group-open:rotate-180 text-[#005086] ml-4 shrink-0">
+                    ▼
+                  </span>
+                </summary>
+                <div className="p-5 text-[#5c5c5c] leading-relaxed border-t border-[#dfe1e2] bg-[#fdfdfd] text-base">
+                  <strong className="text-[#005086] mr-2">A:</strong> 
+                  {faq.a}
+                </div>
+              </details>
             ))}
           </div>
         </div>
