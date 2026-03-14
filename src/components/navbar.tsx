@@ -41,10 +41,6 @@ export function Navbar() {
             <Link href="/check" className="px-2 py-1.5 sm:px-3 hover:text-white hover:bg-white/10 rounded transition-colors break-keep">
               Apply
             </Link>
-            <span className="text-white/30 hidden sm:inline">|</span>
-            <Link href="/admin" className="px-2 py-1.5 sm:px-3 hover:text-white hover:bg-white/10 rounded transition-colors break-keep">
-              Sign in ▾
-            </Link>
           </div>
         </div>
       </div>
