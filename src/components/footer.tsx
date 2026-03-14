@@ -12,14 +12,14 @@ export function Footer() {
               <div className="relative overflow-hidden w-[28px] h-[28px]">
                 <Image
                   src="/logo.png"
-                  alt="Federal Grants Logo"
+                  alt="Grants Logo"
                   fill
                   sizes="28px"
                   className="brightness-0 invert object-cover object-left"
                 />
               </div>
               <span className="text-[18px] font-serif font-bold tracking-widest mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
-                FEDERAL GRANTS
+                GRANTS
               </span>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">

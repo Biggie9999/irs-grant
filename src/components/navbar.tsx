@@ -20,17 +20,17 @@ export function Navbar() {
       <div className="bg-[#005086]">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-1.5 group">
-            <div className="relative overflow-hidden w-[40px] h-[40px]">
+            <div className="relative overflow-hidden w-[36px] h-[36px]">
               <Image
                 src="/logo.png"
-                alt="Federal Grants Logo"
+                alt="Grants Logo"
                 fill
-                sizes="40px"
+                sizes="36px"
                 className="brightness-0 invert object-cover object-left"
               />
             </div>
-            <span className="text-[24px] font-serif font-bold text-white tracking-widest mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
-              FEDERAL GRANTS
+            <span className="text-[22px] font-serif font-bold text-white tracking-widest mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
+              GRANTS
             </span>
           </Link>
           <div className="flex items-center gap-1 text-sm text-white/90">
