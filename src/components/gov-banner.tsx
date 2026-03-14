@@ -9,17 +9,17 @@ export function GovBanner() {
   return (
     <div className="bg-[#f0f0f0] text-[#1b1b1b] text-xs border-b border-[#dfe1e2]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex items-center gap-2 py-1">
-          <span className="text-[11px] mt-0.5">🇺🇸</span>
-          <span className="font-normal text-[11px]">
+        <div className="flex items-center gap-1.5 py-1">
+          <span className="text-[10px] mt-0.5">🇺🇸</span>
+          <span className="font-normal text-[10px]">
             An official website of the United States government
           </span>
           <button
             onClick={() => setExpanded(!expanded)}
-            className="ml-1 inline-flex items-center gap-0.5 text-[11px] font-semibold text-[#005ea2] hover:text-[#1a4480] cursor-pointer"
+            className="ml-0.5 inline-flex items-center gap-0.5 text-[10px] font-medium text-[#005ea2] hover:text-[#1a4480] cursor-pointer"
           >
             Here&apos;s how you know
-            {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            {expanded ? <ChevronUp className="h-2.5 w-2.5" /> : <ChevronDown className="h-2.5 w-2.5" />}
           </button>
         </div>
         {expanded && (
